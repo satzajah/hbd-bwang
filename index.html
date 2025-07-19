@@ -15,6 +15,21 @@
       font-family: 'Comic Sans MS', sans-serif;
     }
 
+    .birthday-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #d6336c;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 1s ease, transform 0.5s ease;
+    }
+
+    .birthday-title.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .cake-container {
       position: relative;
       bottom: 0;
@@ -162,15 +177,14 @@
     }
   </style>
 
-  <!-- EmailJS Library -->
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script>
-    (function() {
-      emailjs.init("2iMw6il-MiygIAZph"); // Ganti dengan Public Key kamu
-    })();
-  </script>
+  <!-- EmailJS SDK v4 (aman & tidak deprecated) -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
+
+  <div class="birthday-title" id="birthdayTitle">
+    🎂 Selamat Ulang Tahun ke-15! 🎉
+  </div>
 
   <div class="cake-container">
     <div class="candle-number" id="candle">
@@ -201,49 +215,49 @@
     <button class="wish-button" type="submit">Kirim</button>
   </form>
 
-  <script type="module">
-  import emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  <script>
+    emailjs.init("2iMw6il-MiygIAZph"); // Ganti dengan PUBLIC KEY milikmu
 
-  emailjs.init("2iMw6il-MiygIAZph"); // Ganti dengan public key milikmu
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("wishForm");
 
-  // Form handler
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("wishForm");
+      // Animasi lapisan kue
+      function dropLayer(id, delay) {
+        setTimeout(() => {
+          document.getElementById(id).classList.add('show');
+        }, delay);
+      }
 
-    function dropLayer(id, delay) {
+      dropLayer("layer4", 500);
+      dropLayer("layer3", 1000);
+      dropLayer("layer2", 1500);
+      dropLayer("layer1", 2000);
+      dropLayer("candle", 2500);
+
+      // Tampilkan judul dan form
       setTimeout(() => {
-        document.getElementById(id).classList.add('show');
-      }, delay);
-    }
+        document.getElementById("birthdayTitle").classList.add("show");
+        document.getElementById("wishText").classList.add("show");
+        form.classList.add("show");
+      }, 3200);
 
-    dropLayer("layer4", 500);
-    dropLayer("layer3", 1000);
-    dropLayer("layer2", 1500);
-    dropLayer("layer1", 2000);
-    dropLayer("candle", 2500);
+      // Kirim form via EmailJS
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const wish = document.getElementById("wishInput").value;
 
-    setTimeout(() => {
-      document.getElementById("wishText").classList.add("show");
-      form.classList.add("show");
-    }, 3200);
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const wish = document.getElementById("wishInput").value;
-
-      emailjs.send("service_gmail123", "template_abc123", {
-        message: wish
-      })
-      .then(() => {
-        alert("Keinginanmu sudah terkirim ke email 🎉");
-        document.getElementById("wishInput").value = "";
-      }, (err) => {
-        alert("Gagal mengirim: " + JSON.stringify(err));
+        emailjs.send("service_gmail123", "template_abc123", {
+          message: wish
+        })
+        .then(() => {
+          alert("Pesan sudah terkirim 🎉");
+          document.getElementById("wishInput").value = "";
+        }, (err) => {
+          alert("Gagal mengirim: " + JSON.stringify(err));
+        });
       });
     });
-  });
-</script>
-
+  </script>
 
 </body>
 </html>
